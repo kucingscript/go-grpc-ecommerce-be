@@ -1,0 +1,20 @@
+syntax = "proto3";
+package service;
+
+option go_package = "github.com/kucingscript/go-grpc-ecommerce-be/pb/service";
+
+import "common/base_response.proto";
+import "buf/validate/validate.proto";
+
+service HelloWorldService {
+  rpc HelloWorld (HelloWorldRequest) returns (HelloWorldResponse);
+}
+
+message HelloWorldRequest {
+  string name = 1 [(buf.validate.field).string = {min_len: 1, max_len: 255}];
+}
+
+message HelloWorldResponse {
+  common.BaseResponse base_response = 1;
+  string message = 2;
+}

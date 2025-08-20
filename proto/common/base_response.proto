@@ -1,0 +1,16 @@
+syntax = "proto3";
+package common;
+
+option go_package = "github.com/kucingscript/go-grpc-ecommerce-be/pb/common";
+
+message ValidationError {
+  string field = 1;
+  string message = 2;
+}
+
+message BaseResponse {
+  int64 status_code = 1;
+  string message = 2;
+  bool is_error = 3;
+  repeated ValidationError validation_errors = 4;
+}
