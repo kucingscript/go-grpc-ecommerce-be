@@ -1,6 +1,10 @@
 package utils
 
-import "github.com/kucingscript/go-grpc-ecommerce-be/pb/common"
+import (
+	"github.com/kucingscript/go-grpc-ecommerce-be/pb/common"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+)
 
 func SuccessResponse(message ...string) *common.BaseResponse {
 	msg := "Success"
@@ -31,4 +35,8 @@ func BadRequestResponse(message string) *common.BaseResponse {
 		IsError:    true,
 		Message:    message,
 	}
+}
+
+func UnauthenticatedResponse() error {
+	return status.Errorf(codes.Unauthenticated, "Unauthenticated")
 }

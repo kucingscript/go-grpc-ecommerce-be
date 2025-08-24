@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net"
+	"time"
 
 	"github.com/kucingscript/go-grpc-ecommerce-be/internal/config"
 	authHandler "github.com/kucingscript/go-grpc-ecommerce-be/internal/handler/auth"
@@ -12,6 +13,7 @@ import (
 	authService "github.com/kucingscript/go-grpc-ecommerce-be/internal/service/auth"
 	"github.com/kucingscript/go-grpc-ecommerce-be/pb/auth"
 	"github.com/kucingscript/go-grpc-ecommerce-be/pkg/database"
+	gocache "github.com/patrickmn/go-cache"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -42,13 +44,17 @@ func run() error {
 
 	defer db.Close()
 
+	cacheService := gocache.New(time.Hour*24, time.Hour)
+	authMiddleware := middleware.NewAuthMiddleware(cacheService)
+
 	authRepository := authRepository.NewAuthRepository(db)
-	authService := authService.NewAuthService(authRepository, cfg.JWT_SECRET)
+	authService := authService.NewAuthService(authRepository, cfg.JWT_SECRET, cacheService)
 	authHandler := authHandler.NewAuthHandle(authService)
 
 	serv := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
 			middleware.ErrorMiddleware,
+			authMiddleware.Middleware,
 		),
 	)
 

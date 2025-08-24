@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/kucingscript/go-grpc-ecommerce-be/internal/model"
+	jwtModel "github.com/kucingscript/go-grpc-ecommerce-be/internal/model/jwt"
 	"github.com/kucingscript/go-grpc-ecommerce-be/internal/utils"
 	"github.com/kucingscript/go-grpc-ecommerce-be/pb/auth"
 	"golang.org/x/crypto/bcrypt"
@@ -36,7 +36,7 @@ func (as *authService) Login(ctx context.Context, request *auth.LoginRequest) (*
 	}
 
 	now := time.Now()
-	claims := model.JwtClaims{
+	claims := jwtModel.JwtClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   user.ID,
 			ExpiresAt: jwt.NewNumericDate(now.Add(24 * time.Hour)),
