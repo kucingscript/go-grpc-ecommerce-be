@@ -24,3 +24,11 @@ func ValidationErrorResponse(validationErrors []*common.ValidationError) *common
 		ValidationErrors: validationErrors,
 	}
 }
+
+func BadRequestResponse(message string) *common.BaseResponse {
+	return &common.BaseResponse{
+		StatusCode: 400,
+		IsError:    true,
+		Message:    message,
+	}
+}

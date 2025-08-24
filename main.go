@@ -6,9 +6,11 @@ import (
 	"net"
 
 	"github.com/kucingscript/go-grpc-ecommerce-be/internal/config"
-	"github.com/kucingscript/go-grpc-ecommerce-be/internal/handler"
+	authHandler "github.com/kucingscript/go-grpc-ecommerce-be/internal/handler/auth"
 	"github.com/kucingscript/go-grpc-ecommerce-be/internal/middleware"
-	"github.com/kucingscript/go-grpc-ecommerce-be/pb/service"
+	authRepository "github.com/kucingscript/go-grpc-ecommerce-be/internal/repository/auth"
+	authService "github.com/kucingscript/go-grpc-ecommerce-be/internal/service/auth"
+	"github.com/kucingscript/go-grpc-ecommerce-be/pb/auth"
 	"github.com/kucingscript/go-grpc-ecommerce-be/pkg/database"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -35,16 +37,20 @@ func run() error {
 
 	defer lis.Close()
 
-	database.ConnectDB(ctx, cfg.DB_URI)
+	db := database.ConnectDB(ctx, cfg.DB_URI)
 	log.Println("connected to database")
 
-	serviceHandler := handler.NewServiceHandler()
+	authRepository := authRepository.NewAuthRepository(db)
+	authService := authService.NewAuthService(authRepository)
+	authHandler := authHandler.NewAuthHandle(authService)
+
 	serv := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
 			middleware.ErrorMiddleware,
 		),
 	)
-	service.RegisterHelloWorldServiceServer(serv, serviceHandler)
+
+	auth.RegisterAuthServiceServer(serv, authHandler)
 
 	if cfg.ENVIRONMENT == "dev" {
 		reflection.Register(serv)
