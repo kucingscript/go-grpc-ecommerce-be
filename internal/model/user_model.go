@@ -32,5 +32,5 @@ type User struct {
 	UpdatedBy *string    `json:"updated_by,omitempty"`
 	DeletedAt *time.Time `json:"deleted_at,omitempty"`
 	DeletedBy *string    `json:"deleted_by,omitempty"`
-	IsDeleted *bool      `json:"is_deleted,omitempty"`
+	IsDeleted bool       `json:"is_deleted"`
 }
