@@ -43,7 +43,7 @@ func run() error {
 	defer db.Close()
 
 	authRepository := authRepository.NewAuthRepository(db)
-	authService := authService.NewAuthService(authRepository)
+	authService := authService.NewAuthService(authRepository, cfg.JWT_SECRET)
 	authHandler := authHandler.NewAuthHandle(authService)
 
 	serv := grpc.NewServer(

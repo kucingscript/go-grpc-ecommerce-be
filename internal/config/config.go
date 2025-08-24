@@ -11,6 +11,7 @@ type Config struct {
 	ENVIRONMENT string
 	DB_URI      string
 	GRPC_PORT   string
+	JWT_SECRET  string
 }
 
 func LoadConfig() (*Config, error) {
@@ -26,6 +27,7 @@ func LoadConfig() (*Config, error) {
 		ENVIRONMENT: os.Getenv("ENVIRONMENT"),
 		DB_URI:      os.Getenv("DB_URI"),
 		GRPC_PORT:   os.Getenv("GRPC_PORT"),
+		JWT_SECRET:  os.Getenv("JWT_SECRET"),
 	}, nil
 
 }

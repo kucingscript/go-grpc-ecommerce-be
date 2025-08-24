@@ -7,7 +7,6 @@ import (
 
 type authHandler struct {
 	auth.UnimplementedAuthServiceServer
-
 	authService authSvc.IAuthService
 }
 

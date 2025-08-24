@@ -10,18 +10,21 @@ import (
 
 type IAuthService interface {
 	Register(ctx context.Context, request *auth.RegisterRequest) (*auth.RegisterResponse, error)
+	Login(ctx context.Context, request *auth.LoginRequest) (*auth.LoginResponse, error)
 }
 
 type authService struct {
 	authRepository authRepo.IAuthRepository
 	htmlSanitizer  *bluemonday.Policy
+	jwtSecret      string
 }
 
-func NewAuthService(authRepository authRepo.IAuthRepository) IAuthService {
+func NewAuthService(authRepository authRepo.IAuthRepository, jwtSecret string) IAuthService {
 	sanitizer := bluemonday.UGCPolicy()
 
 	return &authService{
 		authRepository: authRepository,
 		htmlSanitizer:  sanitizer,
+		jwtSecret:      jwtSecret,
 	}
 }
