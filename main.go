@@ -40,6 +40,8 @@ func run() error {
 	db := database.ConnectDB(ctx, cfg.DB_URI)
 	log.Println("connected to database")
 
+	defer db.Close()
+
 	authRepository := authRepository.NewAuthRepository(db)
 	authService := authService.NewAuthService(authRepository)
 	authHandler := authHandler.NewAuthHandle(authService)

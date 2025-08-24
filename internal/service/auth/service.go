@@ -5,6 +5,7 @@ import (
 
 	authRepo "github.com/kucingscript/go-grpc-ecommerce-be/internal/repository/auth"
 	"github.com/kucingscript/go-grpc-ecommerce-be/pb/auth"
+	"github.com/microcosm-cc/bluemonday"
 )
 
 type IAuthService interface {
@@ -13,10 +14,14 @@ type IAuthService interface {
 
 type authService struct {
 	authRepository authRepo.IAuthRepository
+	htmlSanitizer  *bluemonday.Policy
 }
 
 func NewAuthService(authRepository authRepo.IAuthRepository) IAuthService {
+	sanitizer := bluemonday.UGCPolicy()
+
 	return &authService{
 		authRepository: authRepository,
+		htmlSanitizer:  sanitizer,
 	}
 }

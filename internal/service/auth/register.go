@@ -11,6 +11,9 @@ import (
 )
 
 func (as *authService) Register(ctx context.Context, request *auth.RegisterRequest) (*auth.RegisterResponse, error) {
+	request.FullName = as.htmlSanitizer.Sanitize(request.FullName)
+	request.Email = as.htmlSanitizer.Sanitize(request.Email)
+
 	if request.Password != request.PasswordConfirmation {
 		return &auth.RegisterResponse{
 			BaseResponse: utils.BadRequestResponse("Password and password confirmation do not match"),
