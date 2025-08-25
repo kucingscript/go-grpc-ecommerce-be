@@ -15,7 +15,7 @@ func (as *authService) Logout(ctx context.Context, request *auth.LogoutRequest) 
 		return nil, err
 	}
 
-	tokenClaims, err := jwtModel.GetClaimsFromToken(jwtToken)
+	tokenClaims, err := jwtModel.GetClaimsFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}

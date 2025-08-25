@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/kucingscript/go-grpc-ecommerce-be/internal/model"
@@ -36,12 +37,14 @@ func (as *authService) Register(ctx context.Context, request *auth.RegisterReque
 		return nil, err
 	}
 
+	now := time.Now()
 	newUser := model.User{
 		ID:        uuid.NewString(),
 		FullName:  request.FullName,
 		Email:     request.Email,
 		Password:  string(hashedPassword),
 		RoleCode:  model.USER_ROLE_CUSTOMER,
+		CreatedAt: now,
 		CreatedBy: &request.FullName,
 	}
 

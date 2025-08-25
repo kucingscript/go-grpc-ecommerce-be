@@ -5,11 +5,14 @@ option go_package = "github.com/kucingscript/go-grpc-ecommerce-be/pb/auth";
 
 import "common/base_response.proto";
 import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
 
 service AuthService {
   rpc Register (RegisterRequest) returns (RegisterResponse);
   rpc Login (LoginRequest) returns (LoginResponse);
   rpc Logout (LogoutRequest) returns (LogoutResponse);
+  rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse);
+  rpc GetProfile (GetProfileRequest) returns (GetProfileResponse);
 }
 
 message RegisterRequest {
@@ -37,4 +40,25 @@ message LogoutRequest {}
 
 message LogoutResponse {
   common.BaseResponse base_response = 1;
+}
+
+message ChangePasswordRequest {
+    string old_password = 1 [(buf.validate.field).string = {min_len: 8, max_len: 255}];  
+    string new_password = 2 [(buf.validate.field).string = {min_len: 8, max_len: 255}];  
+    string new_password_confirmation = 3 [(buf.validate.field).string = {min_len: 8, max_len: 255}];  
+}
+
+message ChangePasswordResponse {
+  common.BaseResponse base_response = 1;
+}
+
+message GetProfileRequest {}
+
+message GetProfileResponse {
+  common.BaseResponse base_response = 1;
+  string user_id = 2;
+  string full_name = 3;
+  string email = 4;
+  string role_code = 5;
+  google.protobuf.Timestamp member_since = 6;
 }

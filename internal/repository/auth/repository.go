@@ -10,6 +10,7 @@ import (
 type IAuthRepository interface {
 	GetUserByEmail(ctx context.Context, email string) (*model.User, error)
 	CreateUser(ctx context.Context, user *model.User) error
+	UpdateUserPassword(ctx context.Context, userID, hashedNewPassword, updatedBy string) error
 }
 
 type authRepository struct {

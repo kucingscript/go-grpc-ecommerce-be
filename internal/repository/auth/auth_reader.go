@@ -9,7 +9,7 @@ import (
 )
 
 func (r *authRepository) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
-	query := `SELECT id, email, password, full_name, role_code FROM "user" 
+	query := `SELECT id, email, password, full_name, role_code, created_at FROM "user" 
 			WHERE email = $1 
 			AND is_deleted IS false`
 
@@ -25,6 +25,7 @@ func (r *authRepository) GetUserByEmail(ctx context.Context, email string) (*mod
 		&user.Password,
 		&user.FullName,
 		&user.RoleCode,
+		&user.CreatedAt,
 	)
 
 	if err != nil {
