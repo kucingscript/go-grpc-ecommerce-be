@@ -8,10 +8,14 @@ import (
 
 	"github.com/kucingscript/go-grpc-ecommerce-be/internal/config"
 	authHandler "github.com/kucingscript/go-grpc-ecommerce-be/internal/handler/auth"
+	productHandler "github.com/kucingscript/go-grpc-ecommerce-be/internal/handler/product"
 	"github.com/kucingscript/go-grpc-ecommerce-be/internal/middleware"
 	authRepository "github.com/kucingscript/go-grpc-ecommerce-be/internal/repository/auth"
+	productRepository "github.com/kucingscript/go-grpc-ecommerce-be/internal/repository/product"
 	authService "github.com/kucingscript/go-grpc-ecommerce-be/internal/service/auth"
+	productService "github.com/kucingscript/go-grpc-ecommerce-be/internal/service/product"
 	"github.com/kucingscript/go-grpc-ecommerce-be/pb/auth"
+	"github.com/kucingscript/go-grpc-ecommerce-be/pb/product"
 	"github.com/kucingscript/go-grpc-ecommerce-be/pkg/database"
 	gocache "github.com/patrickmn/go-cache"
 	"google.golang.org/grpc"
@@ -49,7 +53,11 @@ func run() error {
 
 	authRepository := authRepository.NewAuthRepository(db)
 	authService := authService.NewAuthService(authRepository, cfg.JWT_SECRET, cacheService)
-	authHandler := authHandler.NewAuthHandle(authService)
+	authHandler := authHandler.NewAuthHandler(authService)
+
+	productRepository := productRepository.NewProductRepository(db)
+	productService := productService.NewProductService(productRepository, cfg.STORAGE_SERVICE_URL)
+	productHandler := productHandler.NewProductHandler(productService)
 
 	serv := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
@@ -59,6 +67,7 @@ func run() error {
 	)
 
 	auth.RegisterAuthServiceServer(serv, authHandler)
+	product.RegisterProductServiceServer(serv, productHandler)
 
 	if cfg.ENVIRONMENT == "dev" {
 		reflection.Register(serv)

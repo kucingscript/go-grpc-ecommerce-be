@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package product;
+
+option go_package = "github.com/kucingscript/go-grpc-ecommerce-be/pb/product";
+
+import "common/base_response.proto";
+import "buf/validate/validate.proto";
+
+service ProductService {
+  rpc CreateProduct (CreateProductRequest) returns (CreateProductResponse);
+}
+
+message CreateProductRequest {
+  string name = 1 [(buf.validate.field).string = {min_len: 1, max_len: 255}];
+  string description = 2 [(buf.validate.field).string = {min_len: 1, max_len: 255}];
+  double price = 3 [(buf.validate.field).double.gte = 0];
+  string image_file_name = 4 [(buf.validate.field).string = {min_len: 1, max_len: 255}];
+}
+
+message CreateProductResponse {
+  common.BaseResponse base_response = 1;
+  string id = 2;
+}
+
+message DetailProductRequest {
+  string id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 255}];
+}
+
+message DetailProductResponse {
+  common.BaseResponse base_response = 1;
+  string id = 2;
+  string name = 3;
+  string description = 4;
+  double price = 5;
+  string image_url = 6;
+}

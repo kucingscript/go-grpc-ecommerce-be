@@ -8,10 +8,13 @@ import (
 )
 
 type Config struct {
-	ENVIRONMENT string
-	DB_URI      string
-	GRPC_PORT   string
-	JWT_SECRET  string
+	ENVIRONMENT          string
+	DB_URI               string
+	GRPC_PORT            string
+	REST_PORT            string
+	JWT_SECRET           string
+	CORS_ALLOWED_ORIGINS string
+	STORAGE_SERVICE_URL  string
 }
 
 func LoadConfig() (*Config, error) {
@@ -24,10 +27,13 @@ func LoadConfig() (*Config, error) {
 	}
 
 	return &Config{
-		ENVIRONMENT: os.Getenv("ENVIRONMENT"),
-		DB_URI:      os.Getenv("DB_URI"),
-		GRPC_PORT:   os.Getenv("GRPC_PORT"),
-		JWT_SECRET:  os.Getenv("JWT_SECRET"),
+		ENVIRONMENT:          os.Getenv("ENVIRONMENT"),
+		DB_URI:               os.Getenv("DB_URI"),
+		GRPC_PORT:            os.Getenv("GRPC_PORT"),
+		REST_PORT:            os.Getenv("REST_PORT"),
+		JWT_SECRET:           os.Getenv("JWT_SECRET"),
+		CORS_ALLOWED_ORIGINS: os.Getenv("CORS_ALLOWED_ORIGINS"),
+		STORAGE_SERVICE_URL:  os.Getenv("STORAGE_SERVICE_URL"),
 	}, nil
 
 }
