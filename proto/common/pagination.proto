@@ -1,0 +1,22 @@
+syntax = "proto3";
+package common;
+
+option go_package = "github.com/kucingscript/go-grpc-ecommerce-be/pb/common";
+
+message PaginationSortRequest {
+  string field = 1;
+  string direction = 2;
+}
+
+message PaginationRequest {
+  int32 current_page = 1;
+  int32 item_per_page = 2;
+  PaginationSortRequest sort = 3;
+}
+
+message PaginationResponse {
+  int32 current_page = 1;
+  int32 total_page_count = 2;
+  int32 item_per_page = 3;
+  int32 total_item_count = 4;
+}

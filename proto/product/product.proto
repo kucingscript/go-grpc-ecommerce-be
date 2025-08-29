@@ -5,10 +5,17 @@ package product;
 option go_package = "github.com/kucingscript/go-grpc-ecommerce-be/pb/product";
 
 import "common/base_response.proto";
+import "common/pagination.proto";
 import "buf/validate/validate.proto";
 
 service ProductService {
   rpc CreateProduct (CreateProductRequest) returns (CreateProductResponse);
+  rpc DetailProduct (DetailProductRequest) returns (DetailProductResponse);
+  rpc EditProduct (EditProductRequest) returns (EditProductResponse);
+  rpc DeleteProduct (DeleteProductRequest) returns (DeleteProductResponse);
+  rpc ListProduct (ListProductRequest) returns (ListProductResponse);
+  rpc ListProductAdmin (ListProductAdminRequest) returns (ListProductAdminResponse);
+  rpc HighlightProducts (HighlightProductsRequest) returns (HighlightProductsResponse);
 }
 
 message CreateProductRequest {
@@ -34,4 +41,78 @@ message DetailProductResponse {
   string description = 4;
   double price = 5;
   string image_url = 6;
+}
+
+message EditProductRequest {
+  string id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 255}];
+  string name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 255}];
+  string description = 3 [(buf.validate.field).string = {min_len: 1, max_len: 255}];
+  double price = 4 [(buf.validate.field).double.gte = 0];
+  string image_file_name = 5 [(buf.validate.field).string = {min_len: 1, max_len: 255}];
+}
+
+message EditProductResponse {
+  common.BaseResponse base_response = 1;
+  string id = 2;
+}
+
+message DeleteProductRequest {
+  string id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 255}];
+}
+
+message DeleteProductResponse {
+  common.BaseResponse base_response = 1;
+}
+
+message ListProductRequest {
+  common.PaginationRequest pagination = 1;
+}
+
+message ListProductResponseItem {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+  string image_url = 5;
+}
+
+message ListProductResponse {
+  common.BaseResponse base_response = 1;
+  common.PaginationResponse pagination = 2;
+  repeated ListProductResponseItem data = 3;
+}
+
+message ListProductAdminRequest {
+  common.PaginationRequest pagination = 1;
+}
+
+message ListProductAdminResponseItem {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+  string image_url = 5;
+}
+
+message ListProductAdminResponse {
+  common.BaseResponse base_response = 1;
+  common.PaginationResponse pagination = 2;
+  repeated ListProductAdminResponseItem data = 3;
+}
+
+message HighlightProductsRequest {
+
+}
+
+message HighlightProductsResponseItem {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+  string image_url = 5;
+}
+
+message HighlightProductsResponse {
+  common.BaseResponse base_response = 1;
+  repeated HighlightProductsResponseItem data = 2;
 }

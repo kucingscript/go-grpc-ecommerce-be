@@ -11,6 +11,11 @@ import (
 type IProductService interface {
 	CreateProduct(ctx context.Context, request *product.CreateProductRequest) (*product.CreateProductResponse, error)
 	DetailProduct(ctx context.Context, request *product.DetailProductRequest) (*product.DetailProductResponse, error)
+	EditProduct(ctx context.Context, request *product.EditProductRequest) (*product.EditProductResponse, error)
+	DeleteProduct(ctx context.Context, request *product.DeleteProductRequest) (*product.DeleteProductResponse, error)
+	ListProduct(ctx context.Context, request *product.ListProductRequest) (*product.ListProductResponse, error)
+	ListProductAdmin(ctx context.Context, request *product.ListProductAdminRequest) (*product.ListProductAdminResponse, error)
+	HighlightProducts(ctx context.Context, request *product.HighlightProductsRequest) (*product.HighlightProductsResponse, error)
 }
 
 type productService struct {
