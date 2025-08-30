@@ -8,13 +8,17 @@ import (
 
 	"github.com/kucingscript/go-grpc-ecommerce-be/internal/config"
 	authHandler "github.com/kucingscript/go-grpc-ecommerce-be/internal/handler/auth"
+	cartHandler "github.com/kucingscript/go-grpc-ecommerce-be/internal/handler/cart"
 	productHandler "github.com/kucingscript/go-grpc-ecommerce-be/internal/handler/product"
 	"github.com/kucingscript/go-grpc-ecommerce-be/internal/middleware"
 	authRepository "github.com/kucingscript/go-grpc-ecommerce-be/internal/repository/auth"
+	cartRepository "github.com/kucingscript/go-grpc-ecommerce-be/internal/repository/cart"
 	productRepository "github.com/kucingscript/go-grpc-ecommerce-be/internal/repository/product"
 	authService "github.com/kucingscript/go-grpc-ecommerce-be/internal/service/auth"
+	cartService "github.com/kucingscript/go-grpc-ecommerce-be/internal/service/cart"
 	productService "github.com/kucingscript/go-grpc-ecommerce-be/internal/service/product"
 	"github.com/kucingscript/go-grpc-ecommerce-be/pb/auth"
+	"github.com/kucingscript/go-grpc-ecommerce-be/pb/cart"
 	"github.com/kucingscript/go-grpc-ecommerce-be/pb/product"
 	"github.com/kucingscript/go-grpc-ecommerce-be/pkg/database"
 	gocache "github.com/patrickmn/go-cache"
@@ -59,6 +63,10 @@ func run() error {
 	productService := productService.NewProductService(productRepository, cfg.STORAGE_SERVICE_URL)
 	productHandler := productHandler.NewProductHandler(productService)
 
+	cartRepository := cartRepository.NewCartRepository(db)
+	cartService := cartService.NewCartService(productRepository, cartRepository, cfg.STORAGE_SERVICE_URL)
+	cartHandler := cartHandler.NewCartHandler(cartService)
+
 	serv := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
 			middleware.ErrorMiddleware,
@@ -68,6 +76,7 @@ func run() error {
 
 	auth.RegisterAuthServiceServer(serv, authHandler)
 	product.RegisterProductServiceServer(serv, productHandler)
+	cart.RegisterCartServiceServer(serv, cartHandler)
 
 	if cfg.ENVIRONMENT == "dev" {
 		reflection.Register(serv)

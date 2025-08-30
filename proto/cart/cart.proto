@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package cart;
+
+option go_package = "github.com/kucingscript/go-grpc-ecommerce-be/pb/cart";
+
+import "common/base_response.proto";
+import "buf/validate/validate.proto";
+
+service CartService {
+  rpc AddProductToCart (AddProductToCartRequest) returns (AddProductToCartResponse);
+  rpc ListCart (ListCartRequest) returns (ListCartResponse);
+  rpc DeleteCart (DeleteCartRequest) returns (DeleteCartResponse);
+  rpc UpdateCartQuantity (UpdateCartQuantityRequest) returns (UpdateCartQuantityResponse);
+}
+
+message AddProductToCartRequest {
+  string product_id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 255}];
+}
+
+message AddProductToCartResponse {
+  common.BaseResponse base_response = 1;
+  string id = 2;
+}
+
+message ListCartRequest {
+}
+
+message ListCartResponseItem {
+  string cart_id = 1;
+  string product_id = 2;
+  string product_name = 3;
+  string product_image_url = 4;
+  double product_price = 5;
+  int64 quantity = 6;
+}
+
+message ListCartResponse {
+  common.BaseResponse base_response = 1;
+  repeated ListCartResponseItem items = 2;
+}
+
+message DeleteCartRequest {
+  string cart_id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 255}];
+}
+
+message DeleteCartResponse {
+  common.BaseResponse base_response = 1;
+}
+
+message UpdateCartQuantityRequest {
+  string cart_id = 1 [(buf.validate.field).string = {min_len: 1, max_len: 255}];
+  int64 new_quantity = 2 [(buf.validate.field).int64.gte = 0];
+}
+
+message UpdateCartQuantityResponse {
+  common.BaseResponse base_response = 1;
+}
