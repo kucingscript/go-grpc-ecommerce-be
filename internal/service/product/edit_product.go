@@ -36,24 +36,27 @@ func (s *productService) EditProduct(ctx context.Context, request *product.EditP
 		}, nil
 	}
 
-	if productExist.ImageFileName != request.ImageFileName {
+	imageFileName := productExist.ImageFileName
+
+	if request.ImageFileName != "" && productExist.ImageFileName != request.ImageFileName {
 		newImagePath := filepath.Join("storage", "product", request.ImageFileName)
-		_, err = os.Stat(newImagePath)
+		_, err := os.Stat(newImagePath)
 		if err != nil {
 			if os.IsNotExist(err) {
 				return &product.EditProductResponse{
-					BaseResponse: utils.BadRequestResponse("Image file not found"),
+					BaseResponse: utils.BadRequestResponse("New image file not found"),
 				}, nil
 			}
-
 			return nil, err
 		}
 
-		oldImagePath := filepath.Join("storage", "product", productExist.ImageFileName)
-		err = os.Remove(oldImagePath)
-		if err != nil {
-			return nil, err
+		if productExist.ImageFileName != "" {
+			oldImagePath := filepath.Join("storage", "product", productExist.ImageFileName)
+			if err := os.Remove(oldImagePath); err != nil && !os.IsNotExist(err) {
+				return nil, err
+			}
 		}
+		imageFileName = request.ImageFileName
 	}
 
 	now := time.Now()
@@ -62,7 +65,7 @@ func (s *productService) EditProduct(ctx context.Context, request *product.EditP
 		Name:          request.Name,
 		Description:   request.Description,
 		Price:         request.Price,
-		ImageFileName: request.ImageFileName,
+		ImageFileName: imageFileName,
 		UpdatedAt:     &now,
 		UpdatedBy:     &claims.FullName,
 	}
